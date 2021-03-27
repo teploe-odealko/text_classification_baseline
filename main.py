@@ -117,6 +117,6 @@ if __name__ == '__main__':
         # for
     # preprocess
     total = delayed(modeling)(features)
-    total.visualize()
+    total.visualize(filename='graph.svg')
     # total.compute()
     # print(data.head())
