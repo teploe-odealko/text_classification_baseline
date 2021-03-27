@@ -1,4 +1,5 @@
 import inspect
+import pickle
 
 import yaml
 import pandas as pd
@@ -79,29 +80,43 @@ def spacy_lemmatization_rm_stopwords(data: pd.DataFrame):
     return data
 
 
-def count_vectorize(data: pd.DataFrame):
-    vectoriser = CountVectorizer(token_pattern=r'[A-Za-zА-Яа-я]+',
-                                 min_df=30)
-    X_train_bow = vectoriser.fit_transform(data.text)
+def count_vectorize(data: pd.DataFrame, conf):
+    vectorizer = CountVectorizer(token_pattern=r'[A-Za-zА-Яа-я]+',
+                                 min_df=conf['min_vectorizer_freq'])
+    pickle.dump(vectorizer, open("data/06_models/count_vectorizer.pkl", "wb"))
+    X_train_bow = vectorizer.fit_transform(data.text)
     return X_train_bow
 
+
 def split(data: pd.DataFrame, conf: dict):
-    data, test = train_test_split(data, test_size=conf['split']['val'], random_state=conf['seed'])
-    train, val = train_test_split(data, test_size=conf['split']['test'], random_state=conf['seed'])
-    return (train, val, test)
+    data, test = train_test_split(data, test_size=conf['split']['test'], random_state=conf['seed'])
+    train, val = train_test_split(data, test_size=conf['split']['val'], random_state=conf['seed'])
+    return train, val, test
+
+
+@delayed
+def modeling(features):
+    print(features)
+
 
 if __name__ == '__main__':
     conf = read_config()
     data = load_dataset(conf)
 
+    features = []
     for preprocess_type in conf['preprocess']:
         preprocessed = eval(preprocess_type + '(data.copy())')
-
+        train, val, test = split(data, conf)
         for vectorization_type in conf['feature_engineering']:
             if vectorization_type == 'bow':
-                count_vectorize(data)
-            print(vectorization_type)
+                bow_features = count_vectorize(train, conf['feature_engineering']['bow'])
+                features.append(bow_features)
+            # features = np.concatenate(features, axis=1)
+            # modeling(features)
+            # print(vectorization_type)
         # for
     # preprocess
-
+    total = delayed(modeling)(features)
+    total.visualize()
+    # total.compute()
     # print(data.head())
