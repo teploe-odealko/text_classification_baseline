@@ -80,6 +80,7 @@ def spacy_lemmatization_rm_stopwords(data: pd.DataFrame):
     return data
 
 
+@delayed
 def count_vectorize(data: pd.DataFrame, conf):
     vectorizer = CountVectorizer(token_pattern=r'[A-Za-zА-Яа-я]+',
                                  min_df=conf['min_vectorizer_freq'])
@@ -116,7 +117,8 @@ if __name__ == '__main__':
             # print(vectorization_type)
         # for
     # preprocess
+    print(features)
     total = delayed(modeling)(features)
-    total.visualize(filename='graph.svg')
+    total.visualize()
     # total.compute()
     # print(data.head())
