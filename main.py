@@ -37,10 +37,9 @@ def load_dataset(conf: dict):
     return data
 
 
-def split(data: pd.DataFrame, conf: dict):
-    data, test = train_test_split(data, test_size=conf['split']['test'], random_state=conf['seed'])
-    train, val = train_test_split(data, test_size=conf['split']['val'], random_state=conf['seed'])
-    return train, val, test
+# def split(data: pd.DataFrame, conf: dict):
+#
+#     return train, val, test
 
 
 # def lemmatization(sent: str):
@@ -50,67 +49,66 @@ def split(data: pd.DataFrame, conf: dict):
 
 
 @delayed
-def spacy_lemmatization(data: pd.DataFrame):
+def split(preprocessed_text, name):
+    preprocessed_text, test = train_test_split(preprocessed_text, test_size=conf['split']['test'], random_state=conf['seed'])
+    train, val = train_test_split(preprocessed_text, test_size=conf['split']['val'], random_state=conf['seed'])
+    train.to_csv('data/03_primary/{}_train.csv'.format(name))
+    val.to_csv('data/03_primary/{}_val.csv'.format(name))
+    test.to_csv('data/03_primary/{}_test.csv'.format(name))
+
+
+@delayed
+def spacy_lemmatization(text: pd.Series):
     name = inspect.stack()[0][3]  # function name
     print('{} ...'.format(name))
 
     try:
-        data = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
+        text = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
         print("Loaded preprocessed from directory")
-        return data
+        return text
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
         nlp = spacy.load('en_core_web_sm')
-        # lemmatized = data.text.apply(lemmatization)
-        data.text = data.text.apply(lambda sent:
-                                    ' '.join([token.lemma_ for token in nlp(sent)]))
-        train, val, test = split(data, conf)
-        data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
-        train.to_csv('data/03_primary/{}_train.csv'.format(name))
-        val.to_csv('data/03_primary/{}_val.csv'.format(name))
-        test.to_csv('data/03_primary/{}_test.csv'.format(name))
-    return train
+        preprocessed_text = text.apply(lambda sent:
+                                       ' '.join([token.lemma_ for token in nlp(sent)]))
+        # data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
+    return preprocessed_text
+
 
 @delayed
-def spacy_lemmatization_rm_stopwords(data: pd.DataFrame):
+def spacy_lemmatization_rm_stopwords(text: pd.DataFrame):
     name = inspect.stack()[0][3]  # function name
     print('{} ...'.format(name))
     try:
-        data = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
+        text = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
         print("Loaded preprocessed from directory")
-        return data
+        return text
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
         nlp = spacy.load('en_core_web_sm')
         # lemmatized = data.text.apply(lemmatization)
 
-        data.text = data.text.apply(lambda sent:
-                                    ' '.join([token.lemma_ for token in nlp(sent)
-                                              if nlp.vocab[token.text].is_stop is False]))
-        data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
-        train, val, test = split(data, conf)
-        train.to_csv('data/03_primary/{}_train.csv'.format(name))
-        val.to_csv('data/03_primary/{}_val.csv'.format(name))
-        test.to_csv('data/03_primary/{}_test.csv'.format(name))
-    return train
+        preprocessed_text = text.apply(lambda sent:
+                                       ' '.join([token.lemma_ for token in nlp(sent)
+                                                 if nlp.vocab[token.text].is_stop is False]))
+        # data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
+    return preprocessed_text
 
 
 @delayed
-def count_vectorize(data: pd.DataFrame, conf):
+def count_vectorize(preprocessed_text: pd.Series, conf):
+    print(111111111)
+    print(preprocessed_text)
     vectorizer = CountVectorizer(token_pattern=r'[A-Za-zА-Яа-я]+',
                                  min_df=conf['min_vectorizer_freq'])
     pickle.dump(vectorizer, open("data/06_models/count_vectorizer.pkl", "wb"))
-    X_train_bow = vectorizer.fit_transform(data.text)
-    return X_train_bow
+    X_train_bow = vectorizer.fit_transform(preprocessed_text)
+    return X_train_bow.toarray()
 
-
-# @delayed
-# def modeling(features):
-#     print(features)
 
 @delayed
 def make_logreg(conf: dict, X, y):
-    parameters = {"C":np.logspace(-3,3,7), "penalty": ["l2"]}
+    parameters = {"C": np.logspace(-3, 3, 7), "penalty": ["l2"]}
     logreg = LogisticRegression(random_state=conf['seed'], max_iter=10000)
     clf = GridSearchCV(logreg, parameters, scoring='f1')
     clf.fit(X, y)
@@ -134,37 +132,76 @@ if __name__ == '__main__':
     conf = read_config()
     data = load_dataset(conf)
 
-    features = {}
-    report = {}
+    overall_dict = {}
+    train_label, test_label = train_test_split(data.label,
+                                               test_size=conf['split']['test'],
+                                               random_state=conf['seed'])
+    train_label, val_label = train_test_split(train_label,
+                                              test_size=conf['split']['val'],
+                                              random_state=conf['seed'])
+
     for preprocess_type in conf['preprocess']:
-        train = eval(preprocess_type + '(data.copy())')
+        # print(preprocess_type)
+        # train = eval(preprocess_type + '(data.copy())')
+        if preprocess_type == 'spacy_lemmatization':
+            preprocessed_text = spacy_lemmatization(data.text.copy())
+            preprocessed_text_train = split(preprocessed_text, preprocess_type)
+            overall_dict[preprocess_type] = preprocessed_text_train
+            # train_preprocessed.append(preprocessed_text_train)
+        elif preprocess_type == 'spacy_lemmatization_rm_stopwords':
+            preprocessed_text = spacy_lemmatization_rm_stopwords(data.text.copy())
+            preprocessed_text_train = split(preprocessed_text, preprocess_type)
+            overall_dict[preprocess_type] = preprocessed_text_train
+        else:
+            raise NotImplemented
 
+    for preprocess_type in overall_dict:
+        preprocessed_text_train = overall_dict[preprocess_type]
+        overall_dict[preprocess_type] = {}
         for vectorization_type in conf['feature_engineering']:
+            # features_dict = {}
+            # for train in train_preprocessed:
+            # for
             if vectorization_type == 'bow':
-                bow_features = count_vectorize(train, conf['feature_engineering']['bow'])
-                features['bow'] = bow_features.toarray()
-            # features = np.concatenate(features, axis=1)
-            # modeling(features)
-            # print(vectorization_type)
+                print(preprocessed_text_train)
+                overall_dict[preprocess_type]['bow'] = count_vectorize(preprocessed_text_train,
+                                                                       conf['feature_engineering']['bow'])
+                # features_dict['bow'] = bow_features
+        # features.append(features_dict)
+        # features = np.concatenate(features, axis=1)
+        # modeling(features)
+        # print(vectorization_type)
+
+    for preprocess_type in overall_dict:
+        all_kind_features_for_preprocess_type = overall_dict[preprocess_type]
+        overall_dict[preprocess_type] = {}
         for features_combination in conf['features_combination']:
-            # print(features_combination)
-            X = concat_features([features[feature]
-                            for feature
-                            in conf['features_combination'][features_combination]])
-            # print(concatenated_features)
+            overall_dict[preprocess_type][features_combination] = \
+                concat_features([all_kind_features_for_preprocess_type[feature]
+                                 for feature
+                                 in conf['features_combination'][features_combination]])
 
-            report_by_clsf_type = []
-            for clsf_type in conf['modeling']:
-                if clsf_type == 'logreg':
+    for preprocess_type in overall_dict:
+        for features_combination in overall_dict[preprocess_type]:
+            feature_combination_for_preprocess_type = overall_dict[preprocess_type][features_combination]
+            overall_dict[preprocess_type][features_combination] = {}
 
-                    best_score = make_logreg(conf, X, train.label)
-                    report_by_clsf_type.append(best_score)
-                    # report.loc[features_combination, modeling_type] = 1
-            report[features_combination] = report_by_clsf_type
+            for classifier_type in conf['modeling']:
+                if classifier_type == 'logreg':
+                    best_score = make_logreg(conf,
+                                             feature_combination_for_preprocess_type,
+                                             train_label)
+
+                    overall_dict[preprocess_type][features_combination][classifier_type] = best_score
+                    # report_dict['{}/{}/{}'.format(clsf_type, features_combination, )] = best_score
+                # report.loc[features_combination, modeling_type] = 1
+            # report[features_combination] = report_by_clsf_type
     # preprocess
     # print(features)
-    total = delayed(show_report_table)(report)
-    total.visualize()
+
+    print(overall_dict)
+    total = delayed(show_report_table)(overall_dict)
+    # total.visualize()
     res = total.compute()
     # print(res)
     # print(data.head())

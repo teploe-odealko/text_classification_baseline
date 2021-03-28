@@ -8,6 +8,7 @@ data:
 preprocess:
   - spacy_lemmatization
   - spacy_lemmatization_rm_stopwords
+#  - spacy_lemmatization
 
 split:
   val: 1
@@ -34,6 +35,8 @@ feature_engineering:
 features_combination:
   bow:
     - bow
+#  bow+bow:
+#    - bow
 #    - w2v
 #  bow+w2v:
 #    - bow
