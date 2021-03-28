@@ -34,10 +34,10 @@ def load_dataset(conf: dict):
     return data
 
 
-def preprocess(data: pd.DataFrame, conf: dict):
-    for preprocess_type in conf['preprocess']:
-        if preprocess_type == 'lemmatization':
-            spacy_lemmatization()
+def split(data: pd.DataFrame, conf: dict):
+    data, test = train_test_split(data, test_size=conf['split']['test'], random_state=conf['seed'])
+    train, val = train_test_split(data, test_size=conf['split']['val'], random_state=conf['seed'])
+    return train, val, test
 
 
 # def lemmatization(sent: str):
@@ -50,34 +50,40 @@ def preprocess(data: pd.DataFrame, conf: dict):
 def spacy_lemmatization(data: pd.DataFrame):
     name = inspect.stack()[0][3]  # function name
     try:
-        data = pd.read_csv('data/03_primary/{}.csv'.format(name))
-        return preprocessed
+        data = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
+        return data
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
-        nlp = spacy.load('en', disable=["tagger", "parser", "ner"])
+        nlp = spacy.load('en_core_web_sm')
         # lemmatized = data.text.apply(lemmatization)
         print('{} ...'.format(name))
         data.text = data.text.apply(lambda sent:
                                     ' '.join([token.lemma_ for token in nlp(sent)]))
-        data.to_csv('data/03_primary/{}.csv'.format(name))
-    return data
+        train, val, test = split(data, conf)
+        train.to_csv('data/03_primary/{}_train.csv'.format(name))
+        val.to_csv('data/03_primary/{}_val.csv'.format(name))
+        test.to_csv('data/03_primary/{}_test.csv'.format(name))
+    return train
 
 @delayed
 def spacy_lemmatization_rm_stopwords(data: pd.DataFrame):
     name = inspect.stack()[0][3]  # function name
     try:
-        data = pd.read_csv('data/03_primary/{}.csv'.format(name))
-        return preprocessed
+        data = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
+        return data
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
-        nlp = spacy.load('en', disable=["tagger", "parser", "ner"])
+        nlp = spacy.load('en_core_web_sm')
         # lemmatized = data.text.apply(lemmatization)
         print('{} ...'.format(name))
         data.text = data.text.apply(lambda sent:
                                     ' '.join([token.lemma_ for token in nlp(sent)
                                               if nlp.vocab[token.text].is_stop is False]))
-        data.to_csv('data/03_primary/{}.csv'.format(name))
-    return data
+        train, val, test = split(data, conf)
+        train.to_csv('data/03_primary/{}_train.csv'.format(name))
+        val.to_csv('data/03_primary/{}_val.csv'.format(name))
+        test.to_csv('data/03_primary/{}_test.csv'.format(name))
+    return train
 
 
 @delayed
@@ -88,11 +94,6 @@ def count_vectorize(data: pd.DataFrame, conf):
     X_train_bow = vectorizer.fit_transform(data.text)
     return X_train_bow
 
-
-def split(data: pd.DataFrame, conf: dict):
-    data, test = train_test_split(data, test_size=conf['split']['test'], random_state=conf['seed'])
-    train, val = train_test_split(data, test_size=conf['split']['val'], random_state=conf['seed'])
-    return train, val, test
 
 
 @delayed
@@ -106,8 +107,8 @@ if __name__ == '__main__':
 
     features = []
     for preprocess_type in conf['preprocess']:
-        preprocessed = eval(preprocess_type + '(data.copy())')
-        train, val, test = split(data, conf)
+        train = eval(preprocess_type + '(data.copy())')
+
         for vectorization_type in conf['feature_engineering']:
             if vectorization_type == 'bow':
                 bow_features = count_vectorize(train, conf['feature_engineering']['bow'])
@@ -117,8 +118,9 @@ if __name__ == '__main__':
             # print(vectorization_type)
         # for
     # preprocess
-    print(features)
+    # print(features)
     total = delayed(modeling)(features)
-    total.visualize()
-    # total.compute()
+    # total.visualize()
+    res = total.compute()
+    print(res)
     # print(data.head())

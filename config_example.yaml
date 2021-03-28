@@ -10,12 +10,12 @@ preprocess:
   - spacy_lemmatization_rm_stopwords
 
 split:
-  val: 1000
-  test: 1000
+  val: 1
+  test: 1
 
 feature_engineering:
   bow:
-    min_vectorizer_freq: 30
+    min_vectorizer_freq: 1
 #  tfidf:
 #    min_vectorizer_freq: 30
 #  w2v:
