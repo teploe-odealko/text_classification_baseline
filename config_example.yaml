@@ -31,10 +31,13 @@ feature_engineering:
 #  w2v_pretrained:
 #  bert:
 
-feature_combination:
-  bow+w2v:
+features_combination:
+  bow:
     - bow
-    - w2v
+#    - w2v
+#  bow+w2v:
+#    - bow
+#    - w2v
 
 feature_selection:
   k_best_features: 180
