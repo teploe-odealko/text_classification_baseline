@@ -23,7 +23,7 @@ feature_engineering:
     epochs: 40
     min_count: 1
     window: 2
-    vector_size: 300
+    vector_size: 100
     sample: 0.00006
     alpha: 0.03
     min_alpha: 0.0007
@@ -35,16 +35,20 @@ feature_engineering:
 features_combination:
   bow:
     - bow
-  bow+tfidf:
-    - bow
+  tfidf:
     - tfidf
-  bow+w2v:
-    - bow
+  w2v:
     - w2v
+#  bow+tfidf:
+#    - bow
+#    - tfidf
+#  bow+w2v:
+#    - bow
+#    - w2v
 
 feature_selection:
   k_best_features: 180
 
 modeling:
-  - catboost
+  - sgdclsf
   - logreg

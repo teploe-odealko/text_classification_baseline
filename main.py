@@ -11,7 +11,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV, RandomizedSearchCV
 from gensim.models import Word2Vec
-
+from pathlib import Path
+from loguru import logger
 
 # from spacy.lang.en.stop_words import STOP_WORDS
 
@@ -128,7 +129,7 @@ def w2v_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
 
 @delayed
 def tfidf_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
-    vectorizer = CountVectorizer(token_pattern=r'[A-Za-z]+',
+    vectorizer = TfidfVectorizer(token_pattern=r'[A-Za-z]+',
                                  min_df=conf['min_vectorizer_freq'])
     X_train = vectorizer.fit_transform(preprocessed_text)
     pickle.dump(vectorizer, open("data/06_models/tfidf_{}.pkl".format(name), "wb"))
@@ -136,19 +137,53 @@ def tfidf_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
 
 
 @delayed
-def make_logreg(conf: dict, X, y):
+def make_logreg(conf: dict, X, y, log_path):
+    # Path('/'.join([log_path])).mkdir(parents=True, exist_ok=True)
+
     parameters = {"C": np.logspace(-3, 3, 7), "penalty": ["l2"]}
     logreg = LogisticRegression(random_state=conf['seed'], max_iter=10000)
     clf = GridSearchCV(logreg, parameters, scoring='f1')
-    print(X.shape)
+    # print('/'.join(log_path))
+    logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X.shape))
+    # print(X.shape)
     clf.fit(X, y)
+    logger.info('{} is done. output = {}'.format('->'.join(log_path), clf.best_score_))
+    # report.loc[features_combination, modeling_type] = clf.best_score_
+    return clf.best_score_
+
+
+@delayed
+def make_sgdclassifier(conf: dict, X, y, log_path):
+    # Path('/'.join([log_path])).mkdir(parents=True, exist_ok=True)
+
+    parameters = {
+        "loss": ["hinge", "log"],
+        "alpha": [ 0.001, 0.01, 0.1],
+        "penalty": ["l2", "l1"],
+    }
+
+    model = SGDClassifier(random_state=conf['seed'], max_iter=10000)
+    clf = GridSearchCV(model, parameters, scoring='f1')
+    # print('/'.join(log_path))
+    logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X.shape))
+    # print(X.shape)
+    clf.fit(X, y)
+    logger.info('{} is done. output = {}'.format('->'.join(log_path), clf.best_score_))
     # report.loc[features_combination, modeling_type] = clf.best_score_
     return clf.best_score_
 
 
 @delayed
 def show_report_table(report: dict):
-    print(pd.DataFrame(report))
+    report_df = pd.DataFrame.from_dict({(i, j): report[i][j]
+                            for i in report.keys()
+                            for j in report[i].keys()},
+                           orient='index')
+    # report_df = pd.DataFrame(report)
+    print(report_df)
+    report_df.to_csv('data/08_reporting/report.csv')
+
+
 
 
 @delayed
@@ -157,6 +192,11 @@ def concat_features(features):
 
 
 if __name__ == '__main__':
+    logger.add('data/08_reporting/log.log',
+               format="{time} {message}",
+               level="INFO")
+
+
     conf = read_config()
     data = load_dataset(conf)
 
@@ -190,15 +230,15 @@ if __name__ == '__main__':
             if vectorization_type == 'bow':
                 overall_dict[preprocess_type]['bow'] = count_vectorize(conf['feature_engineering']['bow'],
                                                                        preprocessed_text_train,
-                                                                       vectorization_type)
+                                                                       preprocess_type)
             elif vectorization_type == 'w2v':
                 overall_dict[preprocess_type]['w2v'] = w2v_vectorize(conf['feature_engineering']['w2v'],
                                                                          preprocessed_text_train,
-                                                                         vectorization_type)
+                                                                         preprocess_type)
             elif vectorization_type == 'tfidf':
                 overall_dict[preprocess_type]['tfidf'] = tfidf_vectorize(conf['feature_engineering']['tfidf'],
                                                                          preprocessed_text_train,
-                                                                         vectorization_type)
+                                                                         preprocess_type)
             else:
                 raise NotImplemented
 
@@ -221,9 +261,20 @@ if __name__ == '__main__':
                 if classifier_type == 'logreg':
                     best_score = make_logreg(conf,
                                              feature_combination_for_preprocess_type,
-                                             train_label)
+                                             train_label,
+                                             [preprocess_type, features_combination, classifier_type])
 
                     overall_dict[preprocess_type][features_combination][classifier_type] = best_score
+
+                elif classifier_type == 'sgdclsf':
+                    best_score = make_sgdclassifier(conf,
+                                             feature_combination_for_preprocess_type,
+                                             train_label,
+                                             [preprocess_type, features_combination, classifier_type])
+
+                    overall_dict[preprocess_type][features_combination][classifier_type] = best_score
+                else:
+                    raise NotImplemented
 
     total = delayed(show_report_table)(overall_dict)
     total.visualize()
