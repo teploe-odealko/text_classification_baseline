@@ -19,15 +19,15 @@ feature_engineering:
     min_vectorizer_freq: 1
   tfidf:
     min_vectorizer_freq: 1
-#  w2v:
-#    epochs: 40
-#    min_count: 3
-#    window: 2
-#    size: 300
-#    sample: 0.00006
-#    alpha: 0.03
-#    min_alpha: 0.0007
-#    negative: 20
+  w2v:
+    epochs: 40
+    min_count: 1
+    window: 2
+    vector_size: 300
+    sample: 0.00006
+    alpha: 0.03
+    min_alpha: 0.0007
+    negative: 20
 #  fasttext:
 #  w2v_pretrained:
 #  bert:
@@ -38,9 +38,9 @@ features_combination:
   bow+tfidf:
     - bow
     - tfidf
-#  bow+w2v:
-#    - bow
-#    - w2v
+  bow+w2v:
+    - bow
+    - w2v
 
 feature_selection:
   k_best_features: 180

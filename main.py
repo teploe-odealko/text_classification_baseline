@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV, RandomizedSearchCV
+from gensim.models import Word2Vec
 
 
 # from spacy.lang.en.stop_words import STOP_WORDS
@@ -96,13 +97,33 @@ def count_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
     return X_train_bow.toarray()
 
 
-# @delayed
-# def w2v_vectorize(preprocessed_text: pd.Series, conf):
-#     vectorizer = CountVectorizer(token_pattern=r'[A-Za-z]+',
-#                                  min_df=conf['min_vectorizer_freq'])
-#     X_train_bow = vectorizer.fit_transform(preprocessed_text)
-#     pickle.dump(vectorizer, open("data/06_models/count_vectorizer.pkl", "wb"))
-#     return X_train_bow.toarray()
+@delayed
+def w2v_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
+    w2v_model = Word2Vec(min_count=conf['min_count'],
+                         window=conf['window'],
+                         vector_size=conf['vector_size'],
+                         sample=conf['sample'],
+                         alpha=conf['alpha'],
+                         min_alpha=conf['min_alpha'],
+                         negative=conf['negative'])
+    w2v_model.build_vocab(preprocessed_text.apply(lambda x: x.split()))
+    w2v_model.train(preprocessed_text.apply(lambda x: x.split()),
+                    total_examples=w2v_model.corpus_count,
+                    epochs=conf['epochs'],
+                    report_delay=1)
+    pickle.dump(w2v_model, open("data/06_models/w2v_{}.pkl".format(name), "wb"))
+
+    sent_emb = preprocessed_text.apply(
+        lambda text:
+        np.mean([w2v_model.wv[w] for w in text.split() if w in w2v_model.wv],
+                axis=0)
+    )
+    # print(len(sent_emb))
+    # print(sent_emb[0])
+    X_w2v = np.stack(sent_emb.values, axis=0)
+    # X_w2v = np.array(sen.tolist() for sen in sent_emb)
+    # print(X_w2v)
+    return X_w2v
 
 
 @delayed
@@ -119,7 +140,7 @@ def make_logreg(conf: dict, X, y):
     parameters = {"C": np.logspace(-3, 3, 7), "penalty": ["l2"]}
     logreg = LogisticRegression(random_state=conf['seed'], max_iter=10000)
     clf = GridSearchCV(logreg, parameters, scoring='f1')
-    # print(X.shape)
+    print(X.shape)
     clf.fit(X, y)
     # report.loc[features_combination, modeling_type] = clf.best_score_
     return clf.best_score_
@@ -170,9 +191,10 @@ if __name__ == '__main__':
                 overall_dict[preprocess_type]['bow'] = count_vectorize(conf['feature_engineering']['bow'],
                                                                        preprocessed_text_train,
                                                                        vectorization_type)
-            # elif vectorization_type == 'w2v':
-            #     overall_dict[preprocess_type]['bow'] = w2v_vectorize(preprocessed_text_train,
-            #                                                            conf['feature_engineering']['bow'])
+            elif vectorization_type == 'w2v':
+                overall_dict[preprocess_type]['w2v'] = w2v_vectorize(conf['feature_engineering']['w2v'],
+                                                                         preprocessed_text_train,
+                                                                         vectorization_type)
             elif vectorization_type == 'tfidf':
                 overall_dict[preprocess_type]['tfidf'] = tfidf_vectorize(conf['feature_engineering']['tfidf'],
                                                                          preprocessed_text_train,
@@ -204,5 +226,5 @@ if __name__ == '__main__':
                     overall_dict[preprocess_type][features_combination][classifier_type] = best_score
 
     total = delayed(show_report_table)(overall_dict)
-    # total.visualize()
+    total.visualize()
     res = total.compute()
