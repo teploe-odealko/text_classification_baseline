@@ -277,5 +277,5 @@ if __name__ == '__main__':
                     raise NotImplemented
 
     total = delayed(show_report_table)(overall_dict)
-    total.visualize()
+    # total.visualize()
     res = total.compute()

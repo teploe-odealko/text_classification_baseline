@@ -1,6 +1,6 @@
 seed: 42
 data:
-  filename: data/01_raw/data.xlsx
+  filename: data/01_raw/data_full.xlsx
   type: excel
   X_column: text
   y_column: choose_one
@@ -11,8 +11,8 @@ preprocess:
 #  - spacy_lemmatization
 
 split:
-  val: 1
-  test: 1
+  val: 1000
+  test: 1000
 
 feature_engineering:
   bow:
