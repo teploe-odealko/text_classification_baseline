@@ -60,11 +60,11 @@ def split(preprocessed_text, name):
 @delayed
 def spacy_lemmatization(text: pd.Series):
     name = inspect.stack()[0][3]  # function name
-    print('{} ...'.format(name))
+    # print('{} ...'.format(name))
 
     try:
         text = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
-        print("Loaded preprocessed from directory")
+        # print("Loaded preprocessed from directory")
         return text
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
@@ -78,10 +78,10 @@ def spacy_lemmatization(text: pd.Series):
 @delayed
 def spacy_lemmatization_rm_stopwords(text: pd.DataFrame):
     name = inspect.stack()[0][3]  # function name
-    print('{} ...'.format(name))
+    # print('{} ...'.format(name))
     try:
         text = pd.read_csv('data/03_primary/{}_train.csv'.format(name))
-        print("Loaded preprocessed from directory")
+        # print("Loaded preprocessed from directory")
         return text
     except FileNotFoundError:
         # preprocessed = preprocess(data, conf)
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
     print(overall_dict)
     total = delayed(show_report_table)(overall_dict)
-    # total.visualize()
+    total.visualize()
     res = total.compute()
     # print(res)
     # print(data.head())
