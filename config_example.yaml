@@ -7,14 +7,18 @@ data:
 
 preprocess:
   - spacy_lemmatization
-  - spacy_lemmatization_rm_stopwords
-#  - spacy_lemmatization
+#  - spacy_lemmatization_rm_stopwords
 
 split:
   val: 1000
   test: 1000
 
 feature_engineering:
+  fasttext:
+    vector_size: 300
+    window: 3
+    min_count: 1
+    epochs: 100
   bow:
     min_vectorizer_freq: 1
   tfidf:
@@ -23,7 +27,7 @@ feature_engineering:
     epochs: 40
     min_count: 1
     window: 2
-    vector_size: 100
+    vector_size: 300
     sample: 0.00006
     alpha: 0.03
     min_alpha: 0.0007
@@ -33,22 +37,23 @@ feature_engineering:
 #  bert:
 
 features_combination:
-  bow:
-    - bow
-  tfidf:
-    - tfidf
-  w2v:
-    - w2v
-#  bow+tfidf:
+#  bow:
+#    - bow
+#  tfidf:
+#    - tfidf
+#  w2v:
+#    - w2v
+#  bow+tfidf+w2w:
 #    - bow
 #    - tfidf
-#  bow+w2v:
-#    - bow
 #    - w2v
+  fasttext:
+    - fasttext
 
 feature_selection:
-  k_best_features: 180
+  k_best_features: 300
 
 modeling:
-  - sgdclsf
+#  - sgdclsf
   - logreg
+#  - catboost
