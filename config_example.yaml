@@ -17,8 +17,8 @@ split:
 feature_engineering:
   bow:
     min_vectorizer_freq: 1
-#  tfidf:
-#    min_vectorizer_freq: 30
+  tfidf:
+    min_vectorizer_freq: 1
 #  w2v:
 #    epochs: 40
 #    min_count: 3
@@ -35,9 +35,9 @@ feature_engineering:
 features_combination:
   bow:
     - bow
-#  bow+bow:
-#    - bow
-#    - w2v
+  bow+tfidf:
+    - bow
+    - tfidf
 #  bow+w2v:
 #    - bow
 #    - w2v
