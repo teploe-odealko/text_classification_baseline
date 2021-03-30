@@ -230,3 +230,5 @@
 2021-03-30T16:43:44.383379+0300 spacy_lemmatization->tfidf->logreg is running. X shape = (8876, 100)
 2021-03-30T16:44:05.290913+0300 spacy_lemmatization->bow->logreg is done. output = 0.6747556237262692
 2021-03-30T16:44:18.583980+0300 spacy_lemmatization->tfidf->logreg is done. output = 0.6678034493819807
+2021-03-30T17:51:30.864884+0300 spacy_lemmatization->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-30T17:51:32.266211+0300 spacy_lemmatization->fasttext_pretrained->logreg is done. output = 0.7440086206365886

@@ -1,9 +1,2 @@
 ,,logreg
-custom_cleaning,bow,0.6550708460257244
-custom_cleaning,bow+tfidf+w2w,0.704887046759504
-custom_cleaning,tfidf,0.6606662094135726
-custom_cleaning,w2v,0.704887046759504
-spacy_lemmatization,bow,0.6747556237262692
-spacy_lemmatization,bow+tfidf+w2w,0.7093712839019235
-spacy_lemmatization,tfidf,0.6678034493819807
-spacy_lemmatization,w2v,0.7088194295238941
+spacy_lemmatization,fasttext_pretrained,0.7440086206365886
