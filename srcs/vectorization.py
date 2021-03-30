@@ -6,6 +6,45 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from gensim.models import Word2Vec
 from gensim.models import FastText
 from gensim.test.utils import common_texts  # some example sentences
+from gensim.models.fasttext import load_facebook_vectors
+
+
+import io
+
+def load_vectors(fname):
+    fin = io.open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
+    n, d = map(int, fin.readline().split())
+    data = {}
+    for line in fin:
+        tokens = line.rstrip().split(' ')
+        data[tokens[0]] = map(float, tokens[1:])
+    return data
+
+
+@delayed
+def fasttext_pretrained_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
+
+    wv = load_vectors(conf['vec_path'])
+
+
+    # model.build_vocab(corpus_iterable=preprocessed_text.values)
+    # model.train(corpus_iterable=preprocessed_text.values,
+    #             total_examples=len(preprocessed_text),
+    #             epochs=conf['epochs'])  # train
+
+    # pickle.dump(model, open("data/06_models/fasttext_{}.pkl".format(name), "wb"))
+
+    sent_emb = preprocessed_text.apply(
+        lambda text:
+        np.mean([wv[w] for w in text.split() if w in wv],
+                axis=0)
+    )
+    X_fasttext = np.stack(sent_emb.values, axis=0)
+    return X_fasttext
+
+
+
+
 
 @delayed
 def count_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):

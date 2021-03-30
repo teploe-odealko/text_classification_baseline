@@ -1,13 +1,14 @@
 seed: 42
 data:
-  filename: data/01_raw/data_full.xlsx
-  type: excel
+  filename: data/01_raw/relabeled.csv
+  type: csv
   X_column: text
-  y_column: choose_one
+  y_column: label
 
 preprocess:
   - spacy_lemmatization
 #  - spacy_lemmatization_rm_stopwords
+#  - custom_cleaning
 
 split:
   val: 1000
@@ -32,6 +33,8 @@ feature_engineering:
     alpha: 0.03
     min_alpha: 0.0007
     negative: 20
+  fasttext_pretrained:
+    vec_path: data/06_models/crawl-300d-2M.vec
 #  fasttext:
 #  w2v_pretrained:
 #  bert:
@@ -43,15 +46,17 @@ features_combination:
 #    - tfidf
 #  w2v:
 #    - w2v
+  fasttext_pretrained:
+    - fasttext_pretrained
 #  bow+tfidf+w2w:
 #    - bow
 #    - tfidf
 #    - w2v
-  fasttext:
-    - fasttext
+#  fasttext:
+#    - fasttext
 
 feature_selection:
-  k_best_features: 300
+  k_best_features: 100
 
 modeling:
 #  - sgdclsf

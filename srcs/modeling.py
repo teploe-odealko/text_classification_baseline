@@ -23,6 +23,8 @@ def make_logreg(conf: dict, X, y, log_path):
     clf = GridSearchCV(logreg, parameters, scoring='f1')
     X_new = univariate_feature_selection(X, y, conf['feature_selection']['k_best_features'])
     logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X_new.shape))
+    # print(X_new.shape)
+    # print(y)
     clf.fit(X_new, y)
     logger.info('{} is done. output = {}'.format('->'.join(log_path), clf.best_score_))
     return clf.best_score_

@@ -13,9 +13,14 @@ from loguru import logger
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 from catboost import Pool, cv
-from srcs import spacy_lemmatization, spacy_lemmatization_rm_stopwords
+from srcs import spacy_lemmatization, spacy_lemmatization_rm_stopwords, custom_cleaning
 from srcs import make_catboost, make_logreg, make_sgdclassifier
-from srcs import count_vectorize, tfidf_vectorize, w2v_vectorize, fasttext_vectorize
+from srcs import count_vectorize,\
+    tfidf_vectorize,\
+    w2v_vectorize, \
+    fasttext_vectorize, \
+    fasttext_pretrained_vectorize
+
 
 # from spacy.lang.en.stop_words import STOP_WORDS
 
@@ -32,7 +37,7 @@ def load_dataset(conf: dict):
     if conf['data']['type'] == 'excel':
         data = pd.read_excel(conf['data']['filename'])
     elif conf['data']['type'] == 'csv':
-        data = pd.read_excel(conf['data']['filename'])
+        data = pd.read_csv(conf['data']['filename'])
     else:
         raise NotImplemented
     data = data[[conf['data']['X_column'], conf['data']['y_column']]]
@@ -40,6 +45,7 @@ def load_dataset(conf: dict):
                          conf['data']['y_column']: 'label'},
                 inplace=True)
     return data
+
 
 @delayed
 def show_report_table(report: dict):
@@ -65,7 +71,11 @@ if __name__ == '__main__':
     data = load_dataset(conf)
 
     overall_dict = {}
-    data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
+    if len(data.label.unique()) == 2:
+        positive_label = data.label.unique()[0]
+        data.label = data.label.apply(lambda label: 1 if label == positive_label else 0)
+    else:
+        raise NotImplemented
     train_label, test_label = train_test_split(data.label,
                                                test_size=conf['split']['test'],
                                                random_state=conf['seed'])
@@ -79,6 +89,9 @@ if __name__ == '__main__':
             overall_dict[preprocess_type] = preprocessed_text_train
         elif preprocess_type == 'spacy_lemmatization_rm_stopwords':
             preprocessed_text_train = spacy_lemmatization_rm_stopwords(conf, data.text.copy())
+            overall_dict[preprocess_type] = preprocessed_text_train
+        elif preprocess_type == 'custom_cleaning':
+            preprocessed_text_train = custom_cleaning(conf, data.text.copy())
             overall_dict[preprocess_type] = preprocessed_text_train
         else:
             raise NotImplemented
@@ -101,8 +114,13 @@ if __name__ == '__main__':
                                                                      preprocess_type)
             elif vectorization_type == 'fasttext':
                 overall_dict[preprocess_type]['fasttext'] = fasttext_vectorize(conf['feature_engineering']['fasttext'],
-                                                                     preprocessed_text_train,
-                                                                     preprocess_type)
+                                                                               preprocessed_text_train,
+                                                                               preprocess_type)
+            elif vectorization_type == 'fasttext_pretrained':
+                overall_dict[preprocess_type]['fasttext_pretrained'] = \
+                    fasttext_pretrained_vectorize(conf['feature_engineering']['fasttext_pretrained'],
+                                       preprocessed_text_train,
+                                       preprocess_type)
             else:
                 raise NotImplemented
 
