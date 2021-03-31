@@ -26,16 +26,6 @@ from torchtext.vocab import Vectors
 def fasttext_pretrained_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
 
     vectors = Vectors(name='data/06_models/crawl-300d-2M.vec', cache='cache')
-
-
-
-    # model.build_vocab(corpus_iterable=preprocessed_text.values)
-    # model.train(corpus_iterable=preprocessed_text.values,
-    #             total_examples=len(preprocessed_text),
-    #             epochs=conf['epochs'])  # train
-
-    # pickle.dump(model, open("data/06_models/fasttext_{}.pkl".format(name), "wb"))
-
     sent_emb = preprocessed_text.apply(
         lambda text:
             vectors.get_vecs_by_tokens(text.split()).mean(axis=0)
@@ -44,7 +34,16 @@ def fasttext_pretrained_vectorize(conf: dict, preprocessed_text: pd.Series, name
     return X_fasttext
 
 
+@delayed
+def tfidf_fasttext_pretrained_vectorize(conf: dict, preprocessed_text: pd.Series, name: str):
 
+    vectors = Vectors(name='data/06_models/crawl-300d-2M.vec', cache='cache')
+    sent_emb = preprocessed_text.apply(
+        lambda text:
+            vectors.get_vecs_by_tokens(text.split()).mean(axis=0)
+    )
+    X_fasttext = np.stack(sent_emb.values, axis=0)
+    return X_fasttext
 
 
 @delayed

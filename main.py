@@ -1,18 +1,9 @@
-import pickle
-
 import yaml
 import pandas as pd
 import numpy as np
 from dask import delayed
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
-from gensim.models import Word2Vec
+from sklearn.model_selection import train_test_split
 from loguru import logger
-
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import f_classif
-from catboost import Pool, cv
 from srcs import spacy_lemmatization, spacy_lemmatization_rm_stopwords, custom_cleaning
 from srcs import make_catboost, make_logreg, make_sgdclassifier
 from srcs import count_vectorize,\
@@ -133,7 +124,6 @@ if __name__ == '__main__':
                                  for feature
                                  in conf['features_combination'][features_combination]])
 
-    # print(overall_dict)
     for preprocess_type in overall_dict:
         for features_combination in overall_dict[preprocess_type]:
             feature_combination_for_preprocess_type = overall_dict[preprocess_type][features_combination]

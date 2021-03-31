@@ -2,3 +2,5 @@ venv
 .idea
 data/06*
 cache
+catboost_info
+srcs/__pycache__

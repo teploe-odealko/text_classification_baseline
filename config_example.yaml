@@ -8,7 +8,7 @@ data:
 preprocess:
   - spacy_lemmatization
 #  - spacy_lemmatization_rm_stopwords
-#  - custom_cleaning
+  - custom_cleaning
 
 split:
   val: 1000
@@ -48,17 +48,17 @@ features_combination:
 #    - w2v
   fasttext_pretrained:
     - fasttext_pretrained
-#  bow+tfidf+w2w:
-#    - bow
-#    - tfidf
-#    - w2v
+  bow+tfidf+w2w:
+    - bow
+    - tfidf
+    - w2v
 #  fasttext:
 #    - fasttext
 
 feature_selection:
-  k_best_features: 100
+  k_best_features: 300
 
 modeling:
-#  - sgdclsf
+  - sgdclsf
   - logreg
-#  - catboost
+  - catboost
