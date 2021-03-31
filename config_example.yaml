@@ -46,12 +46,12 @@ features_combination:
 #    - tfidf
 #  w2v:
 #    - w2v
-  fasttext_pretrained:
-    - fasttext_pretrained
+#  fasttext_pretrained:
+#    - fasttext_pretrained
   bow+tfidf+w2w:
     - bow
-    - tfidf
-    - w2v
+#    - tfidf
+#    - w2v
 #  fasttext:
 #    - fasttext
 

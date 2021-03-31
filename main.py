@@ -11,6 +11,8 @@ from srcs import count_vectorize,\
     w2v_vectorize, \
     fasttext_vectorize, \
     fasttext_pretrained_vectorize
+import transformers
+from transformers import BertTokenizer
 
 
 # from spacy.lang.en.stop_words import STOP_WORDS
@@ -53,27 +55,7 @@ def concat_features(features):
     return np.concatenate(features, axis=1)
 
 
-if __name__ == '__main__':
-    logger.add('data/08_reporting/log.log',
-               format="{time} {message}",
-               level="INFO")
-
-    conf = read_config()
-    data = load_dataset(conf)
-
-    overall_dict = {}
-    if len(data.label.unique()) == 2:
-        positive_label = data.label.unique()[0]
-        data.label = data.label.apply(lambda label: 1 if label == positive_label else 0)
-    else:
-        raise NotImplemented
-    train_label, test_label = train_test_split(data.label,
-                                               test_size=conf['split']['test'],
-                                               random_state=conf['seed'])
-    train_label, val_label = train_test_split(train_label,
-                                              test_size=conf['split']['val'],
-                                              random_state=conf['seed'])
-    # print(train_label)
+def add_preprocessing_to_graph(overall_dict):
     for preprocess_type in conf['preprocess']:
         if preprocess_type == 'spacy_lemmatization':
             preprocessed_text_train = spacy_lemmatization(conf, data.text.copy())
@@ -87,6 +69,8 @@ if __name__ == '__main__':
         else:
             raise NotImplemented
 
+
+def add_vectorization_to_graph(overall_dict):
     for preprocess_type in overall_dict:
         preprocessed_text_train = overall_dict[preprocess_type]
         overall_dict[preprocess_type] = {}
@@ -124,6 +108,8 @@ if __name__ == '__main__':
                                  for feature
                                  in conf['features_combination'][features_combination]])
 
+
+def add_modeling_to_graph(overall_dict):
     for preprocess_type in overall_dict:
         for features_combination in overall_dict[preprocess_type]:
             feature_combination_for_preprocess_type = overall_dict[preprocess_type][features_combination]
@@ -151,6 +137,35 @@ if __name__ == '__main__':
                     raise NotImplemented
                 overall_dict[preprocess_type][features_combination][classifier_type] = best_score
 
+
+def add_bert_to_graph(overall_dict):
+    tokenizer = BertTokenizer.from_pretrained('bert-large-uncased', do_lower_case=True)
+
+
+if __name__ == '__main__':
+    logger.add('data/08_reporting/log.log',
+               format="{time} {message}",
+               level="INFO")
+
+    conf = read_config()
+    data = load_dataset(conf)
+
+    overall_dict = {}
+    if len(data.label.unique()) == 2:
+        positive_label = data.label.unique()[0]
+        data.label = data.label.apply(lambda label: 1 if label == positive_label else 0)
+    else:
+        raise NotImplemented
+    train_label, test_label = train_test_split(data.label,
+                                               test_size=conf['split']['test'],
+                                               random_state=conf['seed'])
+    train_label, val_label = train_test_split(train_label,
+                                              test_size=conf['split']['val'],
+                                              random_state=conf['seed'])
+    # print(train_label)
+    add_preprocessing_to_graph(overall_dict)
+    add_vectorization_to_graph(overall_dict)
+    add_modeling_to_graph(overall_dict)
     total = delayed(show_report_table)(overall_dict)
     # total.visualize()
     res = total.compute()

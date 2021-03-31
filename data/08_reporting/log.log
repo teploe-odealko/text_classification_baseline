@@ -304,3 +304,15 @@
 2021-03-31T17:57:55.583544+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7204251200166331
 2021-03-31T17:58:33.071427+0300 custom_cleaning->fasttext_pretrained->catboost is done. output = 0.7753161559115813
 2021-03-31T17:58:39.242685+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.7181573280901422
+2021-03-31T22:03:48.478786+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T22:03:48.491080+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T22:03:48.465094+0300 custom_cleaning->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T22:03:50.828992+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T22:03:50.829217+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T22:03:50.829358+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T22:04:01.655817+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is done. output = 0.708319526569787
+2021-03-31T22:04:03.554920+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is done. output = 0.7224939089337887
+2021-03-31T22:04:20.632122+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.7279462585734112
+2021-03-31T22:04:24.384797+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7363504602412707
+2021-03-31T22:04:32.906213+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7221482045830482
+2021-03-31T22:04:34.388522+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.707574295674506
