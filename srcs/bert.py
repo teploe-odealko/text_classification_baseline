@@ -10,6 +10,7 @@ from tqdm import tqdm
 from dask import delayed
 from sklearn.metrics import confusion_matrix
 
+
 class DisasterTweetsDataset(Dataset):
     def __init__(self, tweets_df: pd.DataFrame, text_column: str, label_column: str = None) -> None:
         super().__init__()
@@ -52,12 +53,12 @@ def collate_fn(batch):
 
 def add_bert_to_graph(logger, overall_dict):
     for preprocess_type in overall_dict:
-        overall_dict[preprocess_type] = {'bert': {'bert': run_bert(logger, preprocess_type)}}
+        overall_dict[preprocess_type] = {'bert': {'bert': run_bert(logger, overall_dict[preprocess_type], preprocess_type)}}
 
 @delayed
-def run_bert(logger, preprocess_type):
+def run_bert(logger, train_df, preprocess_type):
     logger.info("bert block stared")
-    train_df = pd.read_csv('data/03_primary/{}_train.csv'.format(preprocess_type), index_col=0)
+    # train_df = pd.read_csv('data/03_primary/{}_train.csv'.format(preprocess_type), index_col=0)
     val_df = pd.read_csv('data/03_primary/{}_val.csv'.format(preprocess_type), index_col=0)
     train_indices = train_df.index
     val_indices = val_df.index
@@ -98,7 +99,7 @@ def run_bert(logger, preprocess_type):
                                                                cache_dir='/Users/bashleig/PycharmProjects/text_clsf_baseline/cache_hf')
     model.to(device)
 
-    num_epochs = 1
+    num_epochs = 2
     verbose = True
 
     optimizer = AdamW(model.parameters(), lr=1.5e-6, eps=1e-8)
@@ -176,7 +177,7 @@ def run_bert(logger, preprocess_type):
             epoch_prc = tp_total / (tp_total + fp_total)
             epoch_rec = tp_total / (tp_total + fn_total)
             epoch_f1 = (2 * epoch_rec * epoch_prc) / (epoch_rec + epoch_prc)
-
+            logger.info("BERT epoch № {} f1 score: {}".format(epoch, epoch_f1))
             epoch_bar.set_postfix(
                 {f"{split}_loss": epoch_loss.item(), f"{split}_acc": round(epoch_accuracy.item(), 3)})
             if not is_training:
@@ -187,9 +188,8 @@ def run_bert(logger, preprocess_type):
                 if epoch_f1 > best_f1:
                     best_model_weights = copy.deepcopy(model.state_dict())
                     best_f1 = epoch_f1
-
         for bar in progress_bars.values():
             bar.n = 0
             bar.reset()
-        epoch_bar.update()
+        # epoch_bar.update()
     return best_f1

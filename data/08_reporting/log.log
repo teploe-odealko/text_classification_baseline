@@ -431,3 +431,12 @@
 2021-04-02T17:29:37.516478+0300 len of train_loader: 125
 2021-04-02T17:29:37.516593+0300 GPU is available: False
 2021-04-02T17:29:37.516761+0300 Device: cpu
+2021-04-02T23:37:14.267755+0300 Preprocessing: spacy_lemmatization
+2021-04-02T23:37:26.790529+0300 Preprocessing: spacy_lemmatization
+2021-04-02T23:37:26.794044+0300 bert block stared
+2021-04-02T23:46:27.935075+0300 Preprocessing: spacy_lemmatization
+2021-04-02T23:47:24.517571+0300 bert block stared
+2021-04-02T23:47:24.522526+0300 len of train_loader: 1110
+2021-04-02T23:47:24.522691+0300 len of train_loader: 125
+2021-04-02T23:47:24.522806+0300 GPU is available: False
+2021-04-02T23:47:24.524025+0300 Device: cpu
