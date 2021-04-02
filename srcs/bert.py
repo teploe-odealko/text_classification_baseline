@@ -98,7 +98,7 @@ def run_bert(logger, preprocess_type):
                                                                cache_dir='/Users/bashleig/PycharmProjects/text_clsf_baseline/cache_hf')
     model.to(device)
 
-    num_epochs = 4
+    num_epochs = 1
     verbose = True
 
     optimizer = AdamW(model.parameters(), lr=1.5e-6, eps=1e-8)
@@ -154,8 +154,14 @@ def run_bert(logger, preprocess_type):
                     _, predictions = torch.max(outputs.logits, 1)
                     num_correct += torch.eq(predictions, labels).sum()
                     total_samples += labels.size(0)
-
-                    tn, fp, fn, tp = confusion_matrix(predictions.cpu().numpy(), labels.cpu().numpy()).ravel()
+                    # print(confusion_matrix(predictions.cpu().numpy(), labels.cpu().numpy()).ravel())
+                    conf_matr = confusion_matrix(predictions.cpu().numpy(), labels.cpu().numpy()).ravel()
+                    if len(conf_matr) == 1:
+                        tp = conf_matr[0]
+                        fp = 0
+                        fn = 0
+                    else:
+                        tn, fp, fn, tp = confusion_matrix(predictions.cpu().numpy(), labels.cpu().numpy()).ravel()
                     tp_total += tp
                     fp_total += fp
                     fn_total += fn
