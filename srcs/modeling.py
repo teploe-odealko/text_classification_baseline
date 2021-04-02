@@ -17,24 +17,26 @@ def univariate_feature_selection(X, y, k_best_features):
 
 
 @delayed
-def make_logreg(conf: dict, X, y, log_path):
+def make_logreg(conf: dict, df, log_path):
     parameters = {"C": np.logspace(-3, 3, 7), "penalty": ["l2"]}
     logreg = LogisticRegression(random_state=conf['seed'], max_iter=10000)
     clf = GridSearchCV(logreg, parameters, scoring='f1')
-    X_new = univariate_feature_selection(X, y, conf['feature_selection']['k_best_features'])
+    X_new = univariate_feature_selection(df['X'], df['y'], conf['feature_selection']['k_best_features'])
     logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X_new.shape))
-    clf.fit(X_new, y)
+    # print(X_new.shape)
+    # print(y)
+    clf.fit(X_new, df['y'])
     logger.info('{} is done. output = {}'.format('->'.join(log_path), clf.best_score_))
     return clf.best_score_
 
 
 @delayed
-def make_catboost(conf: dict, X, y, log_path):
-    X_new = univariate_feature_selection(X, y, conf['feature_selection']['k_best_features'])
+def make_catboost(conf: dict, df, log_path):
+    X_new = univariate_feature_selection(df['X'], df['y'], conf['feature_selection']['k_best_features'])
 
     logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X_new.shape))
     cv_dataset = Pool(data=X_new,
-                      label=y)
+                      label=df['y'])
 
     params = {"loss_function": "Logloss",
               "early_stopping_rounds": 30,
@@ -52,7 +54,7 @@ def make_catboost(conf: dict, X, y, log_path):
 
 
 @delayed
-def make_sgdclassifier(conf: dict, X, y, log_path):
+def make_sgdclassifier(conf: dict, df, log_path):
     parameters = {
         "loss": ["hinge", "log"],
         "alpha": [0.001, 0.01, 0.1],
@@ -60,9 +62,9 @@ def make_sgdclassifier(conf: dict, X, y, log_path):
     }
     model = SGDClassifier(random_state=conf['seed'], max_iter=10000)
     clf = GridSearchCV(model, parameters, scoring='f1')
-    X_new = univariate_feature_selection(X, y, conf['feature_selection']['k_best_features'])
+    X_new = univariate_feature_selection(df['X'], df['y'], conf['feature_selection']['k_best_features'])
     logger.info('{} is running. X shape = {}'.format('->'.join(log_path), X_new.shape))
-    clf.fit(X_new, y)
+    clf.fit(X_new, df['y'])
     logger.info('{} is done. output = {}'.format('->'.join(log_path), clf.best_score_))
     return clf.best_score_
 

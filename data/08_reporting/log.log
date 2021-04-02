@@ -192,3 +192,242 @@
 2021-03-29T23:10:53.760975+0300 spacy_lemmatization->fasttext->logreg is done. output = 0.5765565301627492
 2021-03-29T23:12:15.007240+0300 spacy_lemmatization->fasttext->logreg is running. X shape = (8876, 300)
 2021-03-29T23:12:50.771823+0300 spacy_lemmatization->fasttext->logreg is done. output = 0.5711549989718845
+2021-03-30T15:58:37.545635+0300 spacy_lemmatization->fasttext->logreg is running. X shape = (8876, 300)
+2021-03-30T16:00:10.056318+0300 spacy_lemmatization->fasttext->logreg is running. X shape = (8876, 300)
+2021-03-30T16:03:32.792274+0300 spacy_lemmatization->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:04:27.561090+0300 spacy_lemmatization->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:04:28.065476+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:10:11.683751+0300 spacy_lemmatization->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:10:12.315460+0300 spacy_lemmatization->tfidf->logreg is running. X shape = (8876, 100)
+2021-03-30T16:10:14.340782+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:10:31.374546+0300 spacy_lemmatization->tfidf->logreg is done. output = 0.6678034493819807
+2021-03-30T16:10:42.558922+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-30T16:10:42.896244+0300 spacy_lemmatization->w2v->logreg is done. output = 0.7120104163138631
+2021-03-30T16:10:42.929068+0300 spacy_lemmatization->bow->logreg is done. output = 0.6747556237262692
+2021-03-30T16:10:49.282439+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7125226502569768
+2021-03-30T16:20:06.817097+0300 custom_cleaning->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:08.028212+0300 custom_cleaning->tfidf->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:09.352382+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:10.916814+0300 spacy_lemmatization->tfidf->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:31.684992+0300 custom_cleaning->tfidf->logreg is done. output = 0.6606662094135726
+2021-03-30T16:20:31.777172+0300 spacy_lemmatization->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:34.335539+0300 spacy_lemmatization->tfidf->logreg is done. output = 0.6678034493819807
+2021-03-30T16:20:34.502464+0300 custom_cleaning->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:20:35.098730+0300 custom_cleaning->bow->logreg is done. output = 0.6550708460257244
+2021-03-30T16:20:50.347373+0300 spacy_lemmatization->bow->logreg is done. output = 0.6747556237262692
+2021-03-30T16:21:02.248324+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-30T16:21:07.255713+0300 custom_cleaning->w2v->logreg is done. output = 0.704887046759504
+2021-03-30T16:21:09.351779+0300 spacy_lemmatization->w2v->logreg is done. output = 0.7088194295238941
+2021-03-30T16:21:10.255964+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-30T16:21:17.585298+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.704887046759504
+2021-03-30T16:21:21.415734+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7093712839019235
+2021-03-30T16:42:57.397170+0300 custom_cleaning->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:42:58.229685+0300 custom_cleaning->tfidf->logreg is running. X shape = (8876, 100)
+2021-03-30T16:42:58.934447+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 100)
+2021-03-30T16:43:30.383085+0300 custom_cleaning->w2v->logreg is running. X shape = (8876, 100)
+2021-03-30T16:43:32.808169+0300 custom_cleaning->tfidf->logreg is done. output = 0.6606662094135726
+2021-03-30T16:43:42.438856+0300 custom_cleaning->bow->logreg is done. output = 0.6550708460257244
+2021-03-30T16:43:44.383379+0300 spacy_lemmatization->tfidf->logreg is running. X shape = (8876, 100)
+2021-03-30T16:44:05.290913+0300 spacy_lemmatization->bow->logreg is done. output = 0.6747556237262692
+2021-03-30T16:44:18.583980+0300 spacy_lemmatization->tfidf->logreg is done. output = 0.6678034493819807
+2021-03-30T17:51:30.864884+0300 spacy_lemmatization->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-30T17:51:32.266211+0300 spacy_lemmatization->fasttext_pretrained->logreg is done. output = 0.7440086206365886
+2021-03-31T15:58:41.872637+0300 custom_cleaning->bow+tfidf+w2w->catboost is running. X shape = (8876, 100)
+2021-03-31T15:58:41.899006+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-31T15:58:41.871782+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T15:58:51.099290+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is done. output = 0.6767635217841464
+2021-03-31T15:59:17.311837+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.705476639937937
+2021-03-31T15:59:32.304420+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.7036356273812971
+2021-03-31T16:02:28.004591+0300 custom_cleaning->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-31T16:02:27.990291+0300 custom_cleaning->fasttext_pretrained->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T16:02:27.998600+0300 custom_cleaning->fasttext_pretrained->catboost is running. X shape = (8876, 100)
+2021-03-31T16:02:30.879041+0300 custom_cleaning->fasttext_pretrained->logreg is done. output = 0.746028579840161
+2021-03-31T16:02:31.993498+0300 custom_cleaning->fasttext_pretrained->sgdclsf is done. output = 0.7398305954280546
+2021-03-31T16:02:56.102360+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T16:02:56.107765+0300 spacy_lemmatization->fasttext_pretrained->catboost is running. X shape = (8876, 100)
+2021-03-31T16:02:56.116534+0300 spacy_lemmatization->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-31T16:03:00.989883+0300 spacy_lemmatization->fasttext_pretrained->logreg is done. output = 0.7440086206365886
+2021-03-31T16:03:01.563107+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is done. output = 0.7336683802496159
+2021-03-31T16:03:33.589905+0300 custom_cleaning->fasttext_pretrained->catboost is done. output = 0.7652865402952014
+2021-03-31T16:03:39.120578+0300 spacy_lemmatization->fasttext_pretrained->catboost is done. output = 0.7450726371854689
+2021-03-31T16:03:49.096656+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-31T16:03:49.099983+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T16:03:49.108382+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is running. X shape = (8876, 100)
+2021-03-31T16:03:53.072985+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is done. output = 0.6875378217446142
+2021-03-31T16:04:00.309028+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7164167733290908
+2021-03-31T16:04:11.955212+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7065517559846992
+2021-03-31T17:37:57.523854+0300 spacy_lemmatization->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-31T17:37:57.509262+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T17:37:57.678951+0300 spacy_lemmatization->fasttext_pretrained->catboost is running. X shape = (8876, 100)
+2021-03-31T17:38:06.145253+0300 custom_cleaning->fasttext_pretrained->catboost is running. X shape = (8876, 100)
+2021-03-31T17:38:08.076886+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is done. output = 0.7336683802496159
+2021-03-31T17:38:08.146292+0300 custom_cleaning->fasttext_pretrained->logreg is running. X shape = (8876, 100)
+2021-03-31T17:38:10.611388+0300 spacy_lemmatization->fasttext_pretrained->logreg is done. output = 0.7440086206365886
+2021-03-31T17:38:10.652167+0300 custom_cleaning->fasttext_pretrained->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T17:38:12.257531+0300 custom_cleaning->fasttext_pretrained->logreg is done. output = 0.746028579840161
+2021-03-31T17:38:16.053597+0300 custom_cleaning->fasttext_pretrained->sgdclsf is done. output = 0.7398305954280546
+2021-03-31T17:39:09.520283+0300 custom_cleaning->bow+tfidf+w2w->catboost is running. X shape = (8876, 100)
+2021-03-31T17:39:09.524377+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T17:39:09.509258+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-31T17:39:14.858500+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is done. output = 0.674814099772067
+2021-03-31T17:39:16.111616+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is running. X shape = (8876, 100)
+2021-03-31T17:39:16.581582+0300 spacy_lemmatization->fasttext_pretrained->catboost is done. output = 0.7450726371854689
+2021-03-31T17:39:33.399400+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.7047954969200552
+2021-03-31T17:39:46.919785+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 100)
+2021-03-31T17:39:46.923514+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 100)
+2021-03-31T17:39:51.589020+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is done. output = 0.6901811410500489
+2021-03-31T17:40:00.213331+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7161308000513442
+2021-03-31T17:40:05.858419+0300 custom_cleaning->fasttext_pretrained->catboost is done. output = 0.7652865402952014
+2021-03-31T17:40:20.825368+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7164134259395805
+2021-03-31T17:40:29.267961+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.7095241450538191
+2021-03-31T17:52:51.726788+0300 custom_cleaning->fasttext_pretrained->logreg is running. X shape = (8876, 300)
+2021-03-31T17:52:51.737135+0300 custom_cleaning->fasttext_pretrained->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T17:52:51.828166+0300 custom_cleaning->fasttext_pretrained->catboost is running. X shape = (8876, 300)
+2021-03-31T17:52:58.386507+0300 spacy_lemmatization->fasttext_pretrained->catboost is running. X shape = (8876, 300)
+2021-03-31T17:53:11.320731+0300 custom_cleaning->fasttext_pretrained->sgdclsf is done. output = 0.7546720744259255
+2021-03-31T17:53:12.938269+0300 custom_cleaning->fasttext_pretrained->logreg is done. output = 0.7568104635940525
+2021-03-31T17:54:03.924576+0300 custom_cleaning->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T17:54:11.542025+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T17:54:11.544384+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T17:54:11.544777+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T17:54:25.165894+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is done. output = 0.7043091114064841
+2021-03-31T17:54:50.911344+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T17:56:32.702520+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7335239894825529
+2021-03-31T17:56:51.675894+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.7270558915803004
+2021-03-31T17:56:51.832245+0300 spacy_lemmatization->fasttext_pretrained->logreg is running. X shape = (8876, 300)
+2021-03-31T17:56:52.881002+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T17:57:01.361744+0300 spacy_lemmatization->fasttext_pretrained->logreg is done. output = 0.7559447542263482
+2021-03-31T17:57:01.412572+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T17:57:03.762658+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is done. output = 0.6948615353767339
+2021-03-31T17:57:11.381069+0300 spacy_lemmatization->fasttext_pretrained->sgdclsf is done. output = 0.7445115851957821
+2021-03-31T17:57:22.201868+0300 spacy_lemmatization->fasttext_pretrained->catboost is done. output = 0.7540138299609019
+2021-03-31T17:57:55.583544+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7204251200166331
+2021-03-31T17:58:33.071427+0300 custom_cleaning->fasttext_pretrained->catboost is done. output = 0.7753161559115813
+2021-03-31T17:58:39.242685+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.7181573280901422
+2021-03-31T22:03:48.478786+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T22:03:48.491080+0300 custom_cleaning->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T22:03:48.465094+0300 custom_cleaning->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T22:03:50.828992+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is running. X shape = (8876, 300)
+2021-03-31T22:03:50.829217+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is running. X shape = (8876, 300)
+2021-03-31T22:03:50.829358+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is running. X shape = (8876, 300)
+2021-03-31T22:04:01.655817+0300 custom_cleaning->bow+tfidf+w2w->sgdclsf is done. output = 0.708319526569787
+2021-03-31T22:04:03.554920+0300 spacy_lemmatization->bow+tfidf+w2w->sgdclsf is done. output = 0.7224939089337887
+2021-03-31T22:04:20.632122+0300 custom_cleaning->bow+tfidf+w2w->logreg is done. output = 0.7279462585734112
+2021-03-31T22:04:24.384797+0300 spacy_lemmatization->bow+tfidf+w2w->logreg is done. output = 0.7363504602412707
+2021-03-31T22:04:32.906213+0300 spacy_lemmatization->bow+tfidf+w2w->catboost is done. output = 0.7221482045830482
+2021-03-31T22:04:34.388522+0300 custom_cleaning->bow+tfidf+w2w->catboost is done. output = 0.707574295674506
+2021-04-01T20:03:38.137153+0300 bert block stared
+2021-04-01T20:25:13.581335+0300 spacy_lemmatization->bow->sgdclsf is running. X shape = (8876, 300)
+2021-04-01T20:25:13.576173+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 300)
+2021-04-01T20:25:13.586444+0300 spacy_lemmatization->bow->catboost is running. X shape = (8876, 300)
+2021-04-01T20:25:23.393010+0300 spacy_lemmatization->bow->sgdclsf is done. output = 0.7224939089337887
+2021-04-01T20:25:34.702458+0300 spacy_lemmatization->bow->logreg is done. output = 0.7363504602412707
+2021-04-02T13:38:35.711754+0300 bert block stared
+2021-04-02T13:38:43.705284+0300 len of train_loader:
+2021-04-02T13:38:43.705483+0300 len of train_loader:
+2021-04-02T13:38:43.705597+0300 GPU is available:
+2021-04-02T13:38:43.707407+0300 Device
+2021-04-02T13:39:54.574099+0300 bert block stared
+2021-04-02T13:39:57.739384+0300 len of train_loader:
+2021-04-02T13:39:57.739590+0300 len of train_loader:
+2021-04-02T13:39:57.739707+0300 GPU is available: False
+2021-04-02T13:39:57.739872+0300 Device: cpu
+2021-04-02T13:41:20.221588+0300 bert block stared
+2021-04-02T13:41:23.489689+0300 len of train_loader:
+2021-04-02T13:41:23.489904+0300 len of train_loader:
+2021-04-02T13:41:23.490023+0300 GPU is available: False
+2021-04-02T13:41:23.490193+0300 Device: cpu
+2021-04-02T13:48:30.928174+0300 bert block stared
+2021-04-02T13:48:34.306076+0300 len of train_loader: 1110
+2021-04-02T13:48:34.306273+0300 len of train_loader: 125
+2021-04-02T13:48:34.306390+0300 GPU is available: False
+2021-04-02T13:48:34.306563+0300 Device: cpu
+2021-04-02T13:52:35.684534+0300 bert block stared
+2021-04-02T13:52:39.042126+0300 len of train_loader: 1110
+2021-04-02T13:52:39.042324+0300 len of train_loader: 125
+2021-04-02T13:52:39.042443+0300 GPU is available: False
+2021-04-02T13:52:39.042913+0300 Device: cpu
+2021-04-02T13:56:32.766735+0300 bert block stared
+2021-04-02T13:56:40.893465+0300 len of train_loader: 1110
+2021-04-02T13:56:40.893663+0300 len of train_loader: 125
+2021-04-02T13:56:40.893778+0300 GPU is available: False
+2021-04-02T13:56:40.893946+0300 Device: cpu
+2021-04-02T14:05:42.202900+0300 bert block stared
+2021-04-02T14:05:45.618744+0300 len of train_loader: 1110
+2021-04-02T14:05:45.618959+0300 len of train_loader: 125
+2021-04-02T14:05:45.619073+0300 GPU is available: False
+2021-04-02T14:05:45.619238+0300 Device: cpu
+2021-04-02T14:13:11.487213+0300 bert block stared
+2021-04-02T14:13:14.859047+0300 len of train_loader: 1110
+2021-04-02T14:13:14.859252+0300 len of train_loader: 125
+2021-04-02T14:13:14.859366+0300 GPU is available: False
+2021-04-02T14:13:14.859532+0300 Device: cpu
+2021-04-02T14:15:13.335897+0300 bert block stared
+2021-04-02T14:15:16.707340+0300 len of train_loader: 1110
+2021-04-02T14:15:16.707540+0300 len of train_loader: 125
+2021-04-02T14:15:16.707657+0300 GPU is available: False
+2021-04-02T14:15:16.707823+0300 Device: cpu
+2021-04-02T14:16:31.785437+0300 bert block stared
+2021-04-02T14:16:34.955052+0300 len of train_loader: 1110
+2021-04-02T14:16:34.955262+0300 len of train_loader: 125
+2021-04-02T14:16:34.955381+0300 GPU is available: False
+2021-04-02T14:16:34.955554+0300 Device: cpu
+2021-04-02T14:17:01.954730+0300 bert block stared
+2021-04-02T14:17:05.294082+0300 len of train_loader: 1110
+2021-04-02T14:17:05.294279+0300 len of train_loader: 125
+2021-04-02T14:17:05.294396+0300 GPU is available: False
+2021-04-02T14:17:05.294562+0300 Device: cpu
+2021-04-02T14:24:16.346551+0300 bert block stared
+2021-04-02T14:24:19.613409+0300 len of train_loader: 1110
+2021-04-02T14:24:19.614843+0300 len of train_loader: 125
+2021-04-02T14:24:19.615127+0300 GPU is available: False
+2021-04-02T14:24:19.615462+0300 Device: cpu
+2021-04-02T14:25:27.515961+0300 bert block stared
+2021-04-02T14:25:30.688651+0300 len of train_loader: 1110
+2021-04-02T14:25:30.688873+0300 len of train_loader: 125
+2021-04-02T14:25:30.688994+0300 GPU is available: False
+2021-04-02T14:25:30.690649+0300 Device: cpu
+2021-04-02T14:35:30.873200+0300 bert block stared
+2021-04-02T14:35:34.337179+0300 len of train_loader: 1110
+2021-04-02T14:35:34.337401+0300 len of train_loader: 125
+2021-04-02T14:35:34.337523+0300 GPU is available: False
+2021-04-02T14:35:34.337698+0300 Device: cpu
+2021-04-02T14:36:16.909756+0300 bert block stared
+2021-04-02T14:39:34.490883+0300 bert block stared
+2021-04-02T14:40:45.678580+0300 bert block stared
+2021-04-02T14:47:09.720143+0300 bert block stared
+2021-04-02T16:23:45.075759+0300 bert block stared
+2021-04-02T16:38:04.247395+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:03:20.101789+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:07:23.446068+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:08:47.990080+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:11:14.470464+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:13:33.116471+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:13:51.988284+0300 spacy_lemmatization->bow->sgdclsf is running. X shape = (8876, 300)
+2021-04-02T17:13:51.990654+0300 spacy_lemmatization->bow->catboost is running. X shape = (8876, 300)
+2021-04-02T17:13:51.990905+0300 spacy_lemmatization->bow->logreg is running. X shape = (8876, 300)
+2021-04-02T17:14:11.460350+0300 spacy_lemmatization->bow->sgdclsf is done. output = 0.7224939089337887
+2021-04-02T17:14:22.687105+0300 spacy_lemmatization->bow->logreg is done. output = 0.7363504602412707
+2021-04-02T17:14:28.451297+0300 spacy_lemmatization->bow->catboost is done. output = 0.7221482045830482
+2021-04-02T17:17:38.546600+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:17:38.550638+0300 bert block stared
+2021-04-02T17:20:12.901876+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:20:12.904764+0300 bert block stared
+2021-04-02T17:21:15.394771+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:21:15.397637+0300 bert block stared
+2021-04-02T17:21:18.524142+0300 len of train_loader: 1110
+2021-04-02T17:21:18.524344+0300 len of train_loader: 125
+2021-04-02T17:21:18.524460+0300 GPU is available: False
+2021-04-02T17:21:18.529208+0300 Device: cpu
+2021-04-02T17:26:16.432823+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:26:16.436566+0300 bert block stared
+2021-04-02T17:26:16.464950+0300 len of train_loader: 1110
+2021-04-02T17:26:16.465135+0300 len of train_loader: 125
+2021-04-02T17:26:16.465266+0300 GPU is available: False
+2021-04-02T17:26:16.465434+0300 Device: cpu
+2021-04-02T17:29:37.485364+0300 Preprocessing: spacy_lemmatization
+2021-04-02T17:29:37.489631+0300 bert block stared
+2021-04-02T17:29:37.516300+0300 len of train_loader: 1110
+2021-04-02T17:29:37.516478+0300 len of train_loader: 125
+2021-04-02T17:29:37.516593+0300 GPU is available: False
+2021-04-02T17:29:37.516761+0300 Device: cpu

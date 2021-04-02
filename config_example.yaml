@@ -1,59 +1,65 @@
 seed: 42
 data:
-  filename: data/01_raw/data_full.xlsx
-  type: excel
+  filename: data/01_raw/relabeled.csv
+  type: csv
   X_column: text
-  y_column: choose_one
+  y_column: label
 
 preprocess:
   - spacy_lemmatization
 #  - spacy_lemmatization_rm_stopwords
+#  - custom_cleaning
+
 
 split:
   val: 1000
   test: 1000
 
 feature_engineering:
-  fasttext:
-    vector_size: 300
-    window: 3
-    min_count: 1
-    epochs: 100
+#  fasttext:
+#    vector_size: 300
+#    window: 3
+#    min_count: 1
+#    epochs: 100
   bow:
     min_vectorizer_freq: 1
-  tfidf:
-    min_vectorizer_freq: 1
-  w2v:
-    epochs: 40
-    min_count: 1
-    window: 2
-    vector_size: 300
-    sample: 0.00006
-    alpha: 0.03
-    min_alpha: 0.0007
-    negative: 20
+#  tfidf:
+#    min_vectorizer_freq: 1
+#  w2v:
+#    epochs: 40
+#    min_count: 1
+#    window: 2
+#    vector_size: 300
+#    sample: 0.00006
+#    alpha: 0.03
+#    min_alpha: 0.0007
+#    negative: 20
+#  fasttext_pretrained:
+#    vec_path: data/06_models/crawl-300d-2M.vec
 #  fasttext:
 #  w2v_pretrained:
 #  bert:
 
 features_combination:
-#  bow:
-#    - bow
+  bow:
+    - bow
 #  tfidf:
 #    - tfidf
 #  w2v:
 #    - w2v
+#  fasttext_pretrained:
+#    - fasttext_pretrained
 #  bow+tfidf+w2w:
 #    - bow
 #    - tfidf
 #    - w2v
-  fasttext:
-    - fasttext
+#  fasttext:
+#    - fasttext
 
 feature_selection:
   k_best_features: 300
 
 modeling:
-#  - sgdclsf
+  - sgdclsf
   - logreg
-#  - catboost
+  - catboost

@@ -1,2 +1,2 @@
-,,logreg
-spacy_lemmatization,fasttext,0.5711549989718845
+,,bert
+spacy_lemmatization,bert,0.0

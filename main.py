@@ -1,23 +1,21 @@
-import pickle
-
 import yaml
 import pandas as pd
 import numpy as np
 from dask import delayed
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
-from gensim.models import Word2Vec
+from sklearn.model_selection import train_test_split
 from loguru import logger
-
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import f_classif
-from catboost import Pool, cv
-from srcs import spacy_lemmatization, spacy_lemmatization_rm_stopwords
+from srcs import spacy_lemmatization, spacy_lemmatization_rm_stopwords, custom_cleaning
 from srcs import make_catboost, make_logreg, make_sgdclassifier
-from srcs import count_vectorize, tfidf_vectorize, w2v_vectorize, fasttext_vectorize
-
-# from spacy.lang.en.stop_words import STOP_WORDS
+from srcs import count_vectorize,\
+    tfidf_vectorize,\
+    w2v_vectorize, \
+    fasttext_vectorize, \
+    fasttext_pretrained_vectorize
+import transformers
+from transformers import BertTokenizer
+from srcs import add_bert_to_graph
+# import os
+# os.environ['TRANSFORMERS_CACHE'] = '/Users/bashleig/PycharmProjects/text_clsf_baseline/'
 
 
 def read_config():
@@ -32,7 +30,7 @@ def load_dataset(conf: dict):
     if conf['data']['type'] == 'excel':
         data = pd.read_excel(conf['data']['filename'])
     elif conf['data']['type'] == 'csv':
-        data = pd.read_excel(conf['data']['filename'])
+        data = pd.read_csv(conf['data']['filename'])
     else:
         raise NotImplemented
     data = data[[conf['data']['X_column'], conf['data']['y_column']]]
@@ -40,6 +38,7 @@ def load_dataset(conf: dict):
                          conf['data']['y_column']: 'label'},
                 inplace=True)
     return data
+
 
 @delayed
 def show_report_table(report: dict):
@@ -56,35 +55,29 @@ def concat_features(features):
     return np.concatenate(features, axis=1)
 
 
-if __name__ == '__main__':
-    logger.add('data/08_reporting/log.log',
-               format="{time} {message}",
-               level="INFO")
-
-    conf = read_config()
-    data = load_dataset(conf)
-
-    overall_dict = {}
-    data.label = data.label.apply(lambda label: 1 if label == 'Relevant' else 0)
-    train_label, test_label = train_test_split(data.label,
-                                               test_size=conf['split']['test'],
-                                               random_state=conf['seed'])
-    train_label, val_label = train_test_split(train_label,
-                                              test_size=conf['split']['val'],
-                                              random_state=conf['seed'])
-    # print(train_label)
+def add_preprocessing_to_graph(overall_dict):
     for preprocess_type in conf['preprocess']:
         if preprocess_type == 'spacy_lemmatization':
-            preprocessed_text_train = spacy_lemmatization(conf, data.text.copy())
+            logger.info("Preprocessing: {}".format(preprocess_type))
+            preprocessed_text_train = spacy_lemmatization(conf, data.copy())
             overall_dict[preprocess_type] = preprocessed_text_train
         elif preprocess_type == 'spacy_lemmatization_rm_stopwords':
-            preprocessed_text_train = spacy_lemmatization_rm_stopwords(conf, data.text.copy())
+            logger.info("Preprocessing: {}".format(preprocess_type))
+            preprocessed_text_train = spacy_lemmatization_rm_stopwords(conf, data.copy())
+            overall_dict[preprocess_type] = preprocessed_text_train
+        elif preprocess_type == 'custom_cleaning':
+            logger.info("Preprocessing: {}".format(preprocess_type))
+            preprocessed_text_train = custom_cleaning(conf, data.copy())
             overall_dict[preprocess_type] = preprocessed_text_train
         else:
             raise NotImplemented
 
+
+def add_vectorization_to_graph(overall_dict):
     for preprocess_type in overall_dict:
-        preprocessed_text_train = overall_dict[preprocess_type]
+        preprocessed_df = overall_dict[preprocess_type]
+        preprocessed_text_train = preprocessed_df.text
+        labels = preprocessed_df.label
         overall_dict[preprocess_type] = {}
         for vectorization_type in conf['feature_engineering']:
             if vectorization_type == 'bow':
@@ -101,8 +94,13 @@ if __name__ == '__main__':
                                                                      preprocess_type)
             elif vectorization_type == 'fasttext':
                 overall_dict[preprocess_type]['fasttext'] = fasttext_vectorize(conf['feature_engineering']['fasttext'],
-                                                                     preprocessed_text_train,
-                                                                     preprocess_type)
+                                                                               preprocessed_text_train,
+                                                                               preprocess_type)
+            elif vectorization_type == 'fasttext_pretrained':
+                overall_dict[preprocess_type]['fasttext_pretrained'] = \
+                    fasttext_pretrained_vectorize(conf['feature_engineering']['fasttext_pretrained'],
+                                       preprocessed_text_train,
+                                       preprocess_type)
             else:
                 raise NotImplemented
 
@@ -111,38 +109,74 @@ if __name__ == '__main__':
         overall_dict[preprocess_type] = {}
         for features_combination in conf['features_combination']:
             overall_dict[preprocess_type][features_combination] = \
-                concat_features([all_kind_features_for_preprocess_type[feature]
+                dict(X=concat_features([all_kind_features_for_preprocess_type[feature]
                                  for feature
-                                 in conf['features_combination'][features_combination]])
+                                 in conf['features_combination'][features_combination]]),
+                     y=labels)
 
-    # print(overall_dict)
+
+def add_modeling_to_graph(overall_dict):
     for preprocess_type in overall_dict:
         for features_combination in overall_dict[preprocess_type]:
-            feature_combination_for_preprocess_type = overall_dict[preprocess_type][features_combination]
+            df = overall_dict[preprocess_type][features_combination]
+            # print(df)
+            # X_train = df['text']
+            # y_train = df['label']
             overall_dict[preprocess_type][features_combination] = {}
 
             for classifier_type in conf['modeling']:
                 if classifier_type == 'logreg':
                     best_score = make_logreg(conf,
-                                             feature_combination_for_preprocess_type,
-                                             train_label,
+                                             df,
                                              [preprocess_type, features_combination, classifier_type])
 
 
                 elif classifier_type == 'sgdclsf':
                     best_score = make_sgdclassifier(conf,
-                                                    feature_combination_for_preprocess_type,
-                                                    train_label,
+                                                    df,
                                                     [preprocess_type, features_combination, classifier_type])
                 elif classifier_type == 'catboost':
                     best_score = make_catboost(conf,
-                                               feature_combination_for_preprocess_type,
-                                               train_label,
+                                               df,
                                                [preprocess_type, features_combination, classifier_type])
                 else:
                     raise NotImplemented
                 overall_dict[preprocess_type][features_combination][classifier_type] = best_score
 
+
+if __name__ == '__main__':
+    logger.add('data/08_reporting/log.log',
+               format="{time} {message}",
+               level="INFO")
+
+    conf = read_config()
+    data = load_dataset(conf)
+
+    overall_dict = {}
+    if len(data.label.unique()) == 2:
+        positive_label = data.label.unique()[0]
+        data.label = data.label.apply(lambda label: 1 if label == positive_label else 0)
+    else:
+        raise NotImplemented
+    # train_label, test_label = train_test_split(data.label,
+    #                                            test_size=conf['split']['test'],
+    #                                            random_state=conf['seed'])
+    # train_label, val_label = train_test_split(train_label,
+    #                                           test_size=conf['split']['val'],
+    #                                           random_state=conf['seed'])
+    # train_label.to_csv('data/03_primary/labels_train.csv')
+    # val_label.to_csv('data/03_primary/labels_test.csv')
+    # test_label.to_csv('data/03_primary/labels_val.csv')
+    # print(train_label)
+
+    add_preprocessing_to_graph(overall_dict)
+    # add_vectorization_to_graph(overall_dict)
+    # add_modeling_to_graph(overall_dict)
+    add_bert_to_graph(logger, overall_dict)
+    print(overall_dict)
+
+
+
     total = delayed(show_report_table)(overall_dict)
-    # total.visualize()
+    total.visualize()
     res = total.compute()
