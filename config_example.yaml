@@ -23,8 +23,8 @@ feature_engineering:
 #    epochs: 100
   bow:
     min_vectorizer_freq: 1
-#  tfidf:
-#    min_vectorizer_freq: 1
+  tfidf:
+    min_vectorizer_freq: 1
 #  w2v:
 #    epochs: 40
 #    min_count: 1

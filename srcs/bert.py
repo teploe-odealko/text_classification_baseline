@@ -8,7 +8,7 @@ from transformers import AdamW, get_linear_schedule_with_warmup
 import copy
 from tqdm import tqdm
 from dask import delayed
-
+from sklearn.metrics import confusion_matrix
 
 class DisasterTweetsDataset(Dataset):
     def __init__(self, tweets_df: pd.DataFrame, text_column: str, label_column: str = None) -> None:
@@ -122,9 +122,15 @@ def run_bert(logger, preprocess_type):
                                     leave=True)
         epoch_stats[split] = {'loss': [], 'accuracy': []}
 
-    training_data = []
+    best_f1 = 0
+
     for epoch in range(1, num_epochs + 1):
         for split, data_loader in data_loaders.items():
+            training_data = []
+            tp_total = 0
+            fp_total = 0
+            fn_total = 0
+
             epoch_loss = torch.FloatTensor([0.0]).to(device)
             num_correct = torch.LongTensor([0]).to(device)
             total_samples = 0
@@ -149,22 +155,35 @@ def run_bert(logger, preprocess_type):
                     num_correct += torch.eq(predictions, labels).sum()
                     total_samples += labels.size(0)
 
+                    tn, fp, fn, tp = confusion_matrix(predictions.cpu().numpy(), labels.cpu().numpy()).ravel()
+                    tp_total += tp
+                    fp_total += fp
+                    fn_total += fn
+
                     if is_training:
                         optimizer.step()
                         scheduler.step()
                     progress_bars[split].update()
             epoch_loss /= len(data_loader)
             epoch_accuracy = num_correct / total_samples
+
+            epoch_prc = tp_total / (tp_total + fp_total)
+            epoch_rec = tp_total / (tp_total + fn_total)
+            epoch_f1 = (2 * epoch_rec * epoch_prc) / (epoch_rec + epoch_prc)
+
             epoch_bar.set_postfix(
                 {f"{split}_loss": epoch_loss.item(), f"{split}_acc": round(epoch_accuracy.item(), 3)})
             if not is_training:
                 training_data.append((epoch_loss.item(), round(epoch_accuracy.item(), 3)))
-                if epoch_accuracy.item() > best_acc:
+                # if epoch_accuracy.item() > best_acc:
+                #     best_model_weights = copy.deepcopy(model.state_dict())
+                #     best_acc = epoch_accuracy.item()
+                if epoch_f1 > best_f1:
                     best_model_weights = copy.deepcopy(model.state_dict())
-                    best_acc = epoch_accuracy.item()
+                    best_f1 = epoch_f1
 
         for bar in progress_bars.values():
             bar.n = 0
             bar.reset()
         epoch_bar.update()
-    return best_acc
+    return best_f1
