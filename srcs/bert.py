@@ -32,9 +32,11 @@ class DisasterTweetsDataset(Dataset):
             sample = {'text': df_row[self.text_column]}
         return sample
 
+
 hf_weights_name = 'roberta-large'
 hf_tokenizer = AutoTokenizer.from_pretrained(hf_weights_name,
                                              cache_dir="/Users/bashleig/PycharmProjects/text_clsf_baseline/cache_hf")
+
 
 def collate_fn(batch):
     if 'label' in batch[0]:
@@ -50,13 +52,12 @@ def collate_fn(batch):
     return dict(**result, **hf_example_ids)
 
 
+# def add_bert_to_graph(logger, overall_dict):
+# for preprocess_type in overall_dict:
 
-def add_bert_to_graph(logger, overall_dict):
-    for preprocess_type in overall_dict:
-        overall_dict[preprocess_type] = {'bert': {'bert': run_bert(logger, overall_dict[preprocess_type], preprocess_type)}}
 
 @delayed
-def run_bert(logger, train_df, preprocess_type):
+def add_bert_to_graph(logger, train_df, preprocess_type):
     logger.info("bert block stared")
     # train_df = pd.read_csv('data/03_primary/{}_train.csv'.format(preprocess_type), index_col=0)
     val_df = pd.read_csv('data/03_primary/{}_val.csv'.format(preprocess_type), index_col=0)
@@ -68,7 +69,6 @@ def run_bert(logger, train_df, preprocess_type):
     val_dataset = DisasterTweetsDataset(val_df, 'text', 'label')
     hf_weights_name = 'roberta-large'
     # Create tokenizer from pretrained weights
-
 
     num_workers = multiprocessing.cpu_count()
     batch_size = 8

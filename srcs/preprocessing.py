@@ -80,7 +80,7 @@ def remove_punct(text):
 
 
 @delayed
-def custom_cleaning(conf: dict, text: pd.DataFrame):
+def custom_cleaning(conf: dict, df: pd.DataFrame):
     name = inspect.stack()[0][3]  # function name
     # print('{} ...'.format(name))
     try:
@@ -89,9 +89,9 @@ def custom_cleaning(conf: dict, text: pd.DataFrame):
         print("Loaded preprocessed from directory")
         return loaded_train
     except FileNotFoundError:
-        text = text.apply(lambda x: remove_URL(x))
-        text = text.apply(lambda x: remove_html(x))
-        text = text.apply(lambda x: remove_emoji(x))
-        text = text.apply(lambda x: remove_punct(x))
-        preprocessed_df = split(conf, text, name)
+        df.text = df.text.apply(lambda x: remove_URL(x))
+        df.text = df.text.apply(lambda x: remove_html(x))
+        df.text = df.text.apply(lambda x: remove_emoji(x))
+        df.text = df.text.apply(lambda x: remove_punct(x))
+        preprocessed_df = split(conf, df, name)
         return preprocessed_df

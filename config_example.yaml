@@ -16,6 +16,8 @@ split:
   test: 1000
 
 feature_engineering:
+#  bert:
+#    model: roberta-large
   fasttext:
     vector_size: 300
     window: 3
@@ -38,8 +40,8 @@ feature_engineering:
     vec_path: data/06_models/crawl-300d-2M.vec
 #  fasttext:
 #  w2v_pretrained:
-  bert:
-    model: roberta-large
+
+
 features_combination:
   bow:
     - bow
